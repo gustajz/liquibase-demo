@@ -1,18 +1,22 @@
+### Liquibase Example
 
-### Build
-
+Create and start containers
 ```
-cd liquibase
-docker build --force-rm --rm=true -t liquibase .
+docker-compose up -d --force-recreate
 ```
 
+Enter into liquibase container
 ```
-cd demo
-docker-compose up --force-recreate
+docker exec -it liquibasedemo_liquibase_1 bash
+```
+
+Execute a status and update
+```
+liquibase --defaultsFile=config/dsv.properties --changeLogFile=changelog/changelog-master.xml status
+liquibase --defaultsFile=config/dsv.properties --changeLogFile=changelog/changelog-master.xml update
+```
+
+Stop and remove containers, networks, images, and volumes
+```
 docker-compose down
-```
-
-```
-cd demo/demo_db
-docker run -it --rm --name liquibase -v $(pwd):/install -w /install liquibase bash
 ```
