@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd 
+						http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+	
+	<changeSet id="20160611-0032" author="gustavojotz">
+		<createTable tableName="parameter">
+			<column name="code" type="varchar(50)"/>
+			<column name="value" type="varchar(200)"/>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="20160611-0035" author="gustavojotz">
+		<sqlFile path="data/example_02.sql" relativeToChangelogFile="true"/>
+		<rollback>
+			<sqlFile path="data/example_02_rollback.sql" relativeToChangelogFile="true"/>
+		</rollback>
+	</changeSet>
+
+	<changeSet id="20160610-2132x" author="gustavojotz">
+		<addColumn tableName="person">
+			<column name="email" type="varchar"/>
+		</addColumn>
+	</changeSet>
+		
+</databaseChangeLog>

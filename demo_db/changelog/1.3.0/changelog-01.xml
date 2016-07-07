@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd 
+						http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+	<changeSet id="20160614-2355" author="gustavojotz">
+		<addColumn tableName="country">
+			<column name="name" type="varchar" afterColumn="id"/>
+			<column name="DIALING_CODE" type="varchar" afterColumn="id"/>
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="20160614-2359" author="gustavojotz" runOnChange="true">
+		<loadUpdateData tableName="country" primaryKey="code" file="data/example_05.csv" relativeToChangelogFile="true" separator=",">
+			<column header="country" name="name" type="string"/>
+			<column header="code" name="code" type="string"/>
+			<column header="DIALING_CODE" name="DIALING_CODE" type="string"/>		
+		</loadUpdateData>
+		<rollback>
+			<sql>DELETE FROM country WHERE id > 2</sql>
+		</rollback>
+	</changeSet>
+</databaseChangeLog>

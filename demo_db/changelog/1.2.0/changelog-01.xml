@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd 
+						http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+	<changeSet id="20160611-2230" author="gustavojotz">
+		<sql>
+			CREATE TABLE country
+			(
+			  id serial NOT NULL,
+			  code character varying(2),
+			  CONSTRAINT country_pk PRIMARY KEY (id),
+			  CONSTRAINT country_uk UNIQUE (code)
+			)		
+		</sql>
+		<rollback>
+			<sql>DROP TABLE country</sql>
+		</rollback>
+	
+	</changeSet>
+	
+	<changeSet id="20160611-2233" author="gustavojotz">
+		<sql>
+			CREATE TABLE state
+			(
+			  id serial NOT NULL,
+			  name character varying(100),
+			  id_country integer,
+			  CONSTRAINT state_pk PRIMARY KEY (id),
+			  CONSTRAINT state_fk_country FOREIGN KEY (id_country)
+      			REFERENCES country (id) MATCH SIMPLE
+      			ON UPDATE NO ACTION ON DELETE NO ACTION,
+  			  CONSTRAINT state_uk UNIQUE (name)
+			)
+		</sql>
+		<rollback>
+			<dropTable tableName="state"/>
+		</rollback>
+	</changeSet> 
+	
+	<changeSet id="20160611-2236" author="gustavojotz">
+		<addColumn tableName="person">
+			<column name="id_state" type="integer">
+				<constraints foreignKeyName="person_fk_state" referencedTableName="state" referencedColumnNames="id"/>
+			</column>
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="20160611-2237" author="gustavojotz">
+		<sqlFile path="data/example_03.sql" relativeToChangelogFile="true"/>
+		<rollback>
+			<sqlFile path="data/example_03_rollback.sql" relativeToChangelogFile="true"/>
+		</rollback>
+	</changeSet>
+
+	<changeSet id="20160611-2300" author="gustavojotz">
+		<dropColumn tableName="person" columnName="state"/>
+		<rollback>
+			<addColumn tableName="person">
+				<column name="state" type="varchar"/>
+			</addColumn>
+			<sqlFile path="data/example_04_rollback_state.sql" relativeToChangelogFile="true"/>
+		</rollback>
+	</changeSet>
+
+ 	<changeSet id="20160611-2325" author="gustavojotz">
+		<dropColumn tableName="person" columnName="nationality"/>
+		<rollback>
+			<addColumn tableName="person">
+				<column name="nationality" type="varchar(2)"/>
+			</addColumn>		
+			<sqlFile path="data/example_04_rollback_nationality.sql" relativeToChangelogFile="true"/>
+		</rollback>
+	</changeSet>
+
+</databaseChangeLog>
