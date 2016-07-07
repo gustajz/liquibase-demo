@@ -1,0 +1,61 @@
+version: '2'
+services:
+  dsv:
+    image: postgres
+    ports:
+      - "15432:5432"
+    expose:
+      - "5432/tcp"
+    environment:
+      - TZ=America/Sao_Paulo
+      - POSTGRES_PASSWORD=demo123
+    volumes: 
+      - ./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+      
+  tst:
+    image: postgres
+    ports:
+      - "25432:5432"
+    expose:
+      - "5432/tcp"
+    environment:
+      - TZ=America/Sao_Paulo
+      - POSTGRES_PASSWORD=demo123
+    volumes: 
+      - ./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+      
+  uat:
+    image: postgres
+    ports:
+      - "35432:5432"
+    expose:
+      - "5432/tcp"
+    environment:
+      - TZ=America/Sao_Paulo
+      - POSTGRES_PASSWORD=demo123
+    volumes: 
+      - ./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+      
+  prd:
+    image: postgres
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432/tcp"
+    environment:
+      - TZ=America/Sao_Paulo
+      - POSTGRES_PASSWORD=demo123
+    volumes: 
+      - ./initdb-prd.sql:/docker-entrypoint-initdb.d/initdb.sql
+
+  liquibase:
+    image: gustajz/liquibase
+    command: bash -c "while true; do sleep 60; done"
+    working_dir: /install
+    volumes: 
+      - ./demo_db:/install
+    links: 
+      - dsv
+      - tst
+      - uat
+      - prd
